@@ -6,7 +6,7 @@ date: "2023-10-17"
 ```{r}
 library(haven)
  wave1 <- read_dta("~/git/values/WV1_Data_stata_v20200208.dta")
- wavve2<- read_dta("~/git/values/WV2_Data_Stata_v20180912.dta")
+ wave2<- read_dta("~/git/values/WV2_Data_Stata_v20180912.dta")
  wave3= read_dta("~/git/values/WV3_Data_Stata_v20180912.dta")
  wave4=read_dta("~/git/values/WV4_Data_stata_v20201117.dta")
 
@@ -14,17 +14,94 @@ library(haven)
 ```
 ```{r}
 library(dplyr)
-wave1select=wave1%>%rename( "religious denomination"=V179,"Self positioning in political scale"=v123,)
-  # Step 1: Rename columns
-df_2019_renamed <- df_2019 %>% rename(ID = ID_2019, Wage = wage_2019)
-df_2020_renamed <- df_2020 %>% rename(ID = ID_2020, Wage = salary_2020)
+
+wave1select <- wave1 %>%
+  rename(
+    "religious denomination" = V179,
+    "Self positioning in political scale" =V123,
+    "age" = V216,
+    "Employment status" = V220,
+    "sex" = V214
+  ) %>%
+  select("religious denomination", "Self positioning in political scale", "age", "Employment status", "sex")
+
+wave2select <- wave2 %>%
+  rename(
+    "religious denomination" = V144,
+    "Self positioning in political scale" = V248,
+    "sex" = V353,
+    "employment" = V358,
+    "age" = V355
+  ) %>%
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex")
+
+wave3select <- wave3 %>%
+  rename(
+    "religious denomination" = V179,
+    "Self positioning in political scale" = V123,
+    "age" = V216,
+    "sex" = V214,
+    "employment" = V220
+  ) %>%
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex")
+
+wave4select <- wave4 %>%
+  rename(
+    "religious denomination" = V184G,
+    "Self positioning in political scale" =V139,
+    "age" = V225,
+    "sex" = V223,
+    "employment" = V229
+  ) %>%
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex")
 
 # Step 2: Add a 'Year' column to each data frame
-df_2019_renamed$Year <- 2019
-df_2020_renamed$Year <- 2020
+wave1select$Year <- 1980
+wave3select$Year <- 1990
+wave3select$Year <- 1995
+wave3select$Year <- 1999
+```
 
+
+
+```{r}
+
+
+wave1select_filtered <- wave1select %>%
+  filter_all(all_vars(. >= 0))
+
+wave2select_filtered <- wave2select %>%
+  filter_all(all_vars(. >= 0))
+
+wave3select_filtered <- wave3select %>%
+  filter_all(all_vars(. >= 0))
+
+wave4select_filtered<- wave4select %>%
+  filter_all(all_vars(. >= 0))
+
+```
+```{r}
+library(dplyr)
+
+wave1select_filtered <- wave1select_filtered %>%
+   mutate(across(where(haven::is.labelled), as.numeric))
+
+wave2select_filtered <- wave2select_filtered %>%
+   mutate(across(where(haven::is.labelled), as.numeric))
+
+wave3select_filtered <- wave3select_filtered %>%
+   mutate(across(where(haven::is.labelled), as.numeric))
+
+wave4select_filtered <- wave4select_filtered %>%
+   mutate(across(where(haven::is.labelled), as.numeric))
+
+
+```
+
+
+```{r}
 # Step 3: Combine the data frames
-final_df <- bind_rows(df_2019_renamed, df_2020_renamed)
+  final_df <- bind_rows(wave1select_filtered,wave2select_filtered,wave3select_filtered,wave4select_filtered)
 
 # Display the final data frame
 print("final_df:")
