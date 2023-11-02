@@ -65,36 +65,63 @@ wave3select$Year <- 1999
 
 
 ```{r}
+wave2select <- wave2select %>%
+  mutate("religious denomination" = case_when(
+    "religious denomination" == 0  ~ 0,
+    "religious denomination" == 64 ~ 1,
+    "religious denomination" == 62 ~ 2,
+    "religious denomination" == 49 ~ 3,
+    "religious denomination" == 42 ~ 4,
+    "religious denomination" == 43 ~ 5,
+    "religious denomination" == 28 ~ 6,
+    "religious denomination" == 12 ~ 7,
+    "religious denomination" == 53 ~ 8,  # and possibly other categories as 'Other'
+    "religious denomination" == -2 ~ -2,
+    "religious denomination" == -4 ~ -4,
+    "religious denomination" == -5 ~ -5,
+    TRUE ~ NA_integer_  # to discard other categories not listed
+  ))
 
 
-wave1select_filtered <- wave1select %>%
-  filter_all(all_vars(. >= 0))
-
-wave2select_filtered <- wave2select %>%
-  filter_all(all_vars(. >= 0))
-
-wave3select_filtered <- wave3select %>%
-  filter_all(all_vars(. >= 0))
-
-wave4select_filtered<- wave4select %>%
-  filter_all(all_vars(. >= 0))
 
 ```
 ```{r}
-library(dplyr)
+wave3select <- wave3select %>%
+  mutate("religious denomination" = case_when(
+    "religious denomination" == 96 ~ 0,
+    "religious denomination" == 1  ~ 1,
+    "religious denomination" == 2  ~ 2,
+    "religious denomination" == 3  ~ 3,
+    "religious denomination" == 4  ~ 4,
+    "religious denomination" == 5  ~ 5,
+    "religious denomination" == 6  ~ 6,
+    "religious denomination" == 7  ~ 7,
+    "religious denomination" == 80 ~ 8,  # and possibly other categories as 'Other'
+    "religious denomination" == 99 ~ -2,
+    "religious denomination" == 100 ~ -4,
+    "religious denomination" == 98 ~ -5,
+    TRUE ~ NA_integer_  # to discard other categories not listed
+  ))
 
-wave1select_filtered <- wave1select_filtered %>%
-   mutate(across(where(haven::is.labelled), as.numeric))
 
-wave2select_filtered <- wave2select_filtered %>%
-   mutate(across(where(haven::is.labelled), as.numeric))
 
-wave3select_filtered <- wave3select_filtered %>%
-   mutate(across(where(haven::is.labelled), as.numeric))
-
-wave4select_filtered <- wave4select_filtered %>%
-   mutate(across(where(haven::is.labelled), as.numeric))
-
+```
+```{r}
+wave4select <- wave4select %>%
+  mutate("religious denomination" = case_when(
+    "religious denomination" == 0  ~ 0,
+    "religious denomination" == 64 ~ 1,
+    "religious denomination" == 61 ~ 2,
+    "religious denomination" == 52 ~ 3,
+    "religious denomination" == 42 ~ 4,
+    "religious denomination" == 49 ~ 5,
+    "religious denomination" == 31 ~ 6,
+    "religious denomination" == 12 ~ 7,
+    "religious denomination" == 53 ~ 8,  # and possibly other categories as 'Other'
+    "religious denomination" == -2 ~ -2,
+    "religious denomination" == -4 ~ -4,
+    TRUE ~ NA_integer_  # to discard other categories not listed
+  ))
 
 ```
 
