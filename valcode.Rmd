@@ -18,6 +18,7 @@ library(haven)
 ```
 
 
+
 ```{r}
 library(dplyr)
 
@@ -26,12 +27,13 @@ wave1select <- wave1 %>%
     "religious denomination" = V179,
     "Self positioning in political scale" =V123,
     "age" = V216,
+    "Socio-economic status of respondent"=V226,
     "employment" = V220,
     "sex" = V214,
     "cheat"=V192,
     "educ"=V218
   ) %>%
-  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ")
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ","Socio-economic status of respondent")
 
 wave2select <- wave2 %>%
   rename(
@@ -40,10 +42,11 @@ wave2select <- wave2 %>%
     "sex" = V353,
     "employment" = V358,
     "age" = V355,
+    "Socio-economic status of respondent"=V364,
     "cheat"=V296,
     "educ"=V356
   ) %>%
-  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ")
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ","Socio-economic status of respondent")
 
 wave3select <- wave3 %>%
   rename(
@@ -52,10 +55,11 @@ wave3select <- wave3 %>%
     "age" = V216,
     "sex" = V214,
     "cheat"=V192,
+    "Socio-economic status of respondent"=V226,
     "employment" = V220
   ,"educ"=V218
   ) %>%
-  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ")
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ","Socio-economic status of respondent")
 
 wave4select <- wave4 %>%
   rename(
@@ -65,9 +69,10 @@ wave4select <- wave4 %>%
     "sex" = V223,
     "employment" = V229,
     "educ"=V227,
+    "Socio-economic status of respondent"=V235,
     "cheat"=V204
   ) %>%
-  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","educ","cheat")
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","educ","cheat","Socio-economic status of respondent")
 
 # Step 2: Add a 'Year' column to each data frame
 wave1select$Year <- 1980
@@ -76,9 +81,71 @@ wave3select$Year <- 1995
 wave4select$Year <- 1999
 ```
 ```{r}
-
+wave1select <- wave1select %>%
+  mutate(`Socio-economic status of respondent` = case_when(
+    `Socio-economic status of respondent` == 1 ~ "Upper class",
+    `Socio-economic status of respondent` == 2 ~ "upper middle class",
+    `Socio-economic status of respondent` == 3 ~ "Low middle class", # Assuming 'Skilled' is similar to 'Low middle class'
+   
+    `Socio-economic status of respondent` == -2 ~ NA_character_,
+      `Socio-economic status of respondent` == -4 ~ NA_character_
+    
+   , # Don't know
+    TRUE ~ NA_character_ # Any other values will be set to NA
+  ))
 ```
 
+```{r}
+wave2select <- wave2select %>%
+  mutate(`Socio-economic status of respondent` = case_when(
+    `Socio-economic status of respondent` == 1 ~ "Upper class",
+    `Socio-economic status of respondent` == 2 ~ "Upper middle class",
+    `Socio-economic status of respondent` == 3 ~ "Low middle class",
+    `Socio-economic status of respondent` == 4 ~ "Low middle class", # Assuming 'Skilled' is similar to 'Low middle class'
+    `Socio-economic status of respondent` == 5 ~ "Low middle class", # Assuming 'Unskill' is similar to 'Low middle class'
+    `Socio-economic status of respondent` == -5 ~ NA_character_, # Missing; Unknown; Inappropriate
+    `Socio-economic status of respondent` == -4 ~ NA_character_, # Not asked
+    `Socio-economic status of respondent` == -3 ~ NA_character_, # Not applicable
+    `Socio-economic status of respondent` == -2 ~ NA_character_, # No answer
+    `Socio-economic status of respondent` == -1 ~ NA_character_, # Don't know
+    TRUE ~ NA_character_ # Any other values will be set to NA
+  ))
+
+```
+```{r}
+wave1select$`religious denomination`=wave1select$`religious denomination`%>%as.numeric()
+```
+
+```{r}
+wave3select <- wave3select %>%
+  mutate(`Socio-economic status of respondent` = case_when(
+    `Socio-economic status of respondent` == 1 ~ "Upper class",
+    `Socio-economic status of respondent` == 2 ~ "Upper middle class",
+    `Socio-economic status of respondent` == 3 ~ "Low middle class",
+    `Socio-economic status of respondent` == 4 ~ "Low middle class", # Assuming 'Working class' is similar to 'Low middle class'
+    `Socio-economic status of respondent` == 5 ~ "Low middle class", # Assuming 'Lower class' is similar to 'Low middle class'
+    `Socio-economic status of respondent` == -2 ~ NA_character_, # NA
+    `Socio-economic status of respondent` == -1 ~ NA_character_, # DK (Don't know)
+    `Socio-economic status of respondent` == -4 ~ NA_character_, # Not asked
+    TRUE ~ NA_character_ # Any other values will be set to NA
+  ))
+
+```
+```{r}
+wave4select <- wave4select %>%
+  mutate(`Socio-economic status of respondent` = case_when(
+    `Socio-economic status of respondent` == 1 ~ "Upper class",
+    `Socio-economic status of respondent` == 2 ~ "Upper middle class",
+    `Socio-economic status of respondent` == 3 ~ "Low middle class",
+    `Socio-economic status of respondent` == 4 ~ "Low middle class", # Assuming 'Working class' is similar to 'Low middle class'
+    `Socio-economic status of respondent` == 5 ~ "Low middle class", # Assuming 'Lower class' is similar to 'Low middle class'
+    `Socio-economic status of respondent` == -2 ~ NA_character_, # No answer
+    `Socio-economic status of respondent` == -1 ~ NA_character_, # Don't know
+    `Socio-economic status of respondent` == -4 ~ NA_character_, # Not asked
+    TRUE ~ NA_character_ # Any other values will be set to NA
+  ))
+
+```
 
 ```{r}
 wave2select <- wave2select %>%
@@ -123,22 +190,24 @@ wave3select <- wave3select %>%
 
 ```
 ```{r}
-
 wave4select <- wave4select %>%
   mutate(`religious denomination` = case_when(
-    `religious denomination` == 0  ~ 0,
-    `religious denomination` == 64 ~ 1,
-    `religious denomination` == 61 ~ 2,
-    `religious denomination` == 52 ~ 3,
-    `religious denomination` == 42 ~ 4,
-    `religious denomination` == 49 ~ 5,
-    `religious denomination` == 31 ~ 6,
-    `religious denomination` == 12 ~ 7,
-    `religious denomination` == 53 ~ 8,  # and possibly other categories as 'Other'
-    `religious denomination` == -2 ~ -2,
-    `religious denomination` == -4 ~ -4,
-    TRUE ~ NA_integer_  # to discard other categories not listed
+    `religious denomination` == -5 ~ -5,  # Mapping "Missing" to -5
+    `religious denomination` == -2 ~ -2,  # Mapping "No answer" to -2
+    `religious denomination` == -1 ~ -1,  # Mapping "Don't know" to -1
+    `religious denomination` == 0  ~ 0,   # Mapping "None" to 0
+    `religious denomination` == 1  ~ 1,   # Mapping "Catholic" to 1
+    `religious denomination` == 2  ~ 2,   # Mapping "Protestant" to 2
+    `religious denomination` == 3  ~ 3,   # Mapping "Orthodox" to 3
+    `religious denomination` == 4  ~ 4,   # Mapping "Jew" to 4
+    `religious denomination` == 5  ~ 5,   # Mapping "Muslim" to 5
+    `religious denomination` == 6  ~ 6,   # Mapping "Hindu" to 6
+    `religious denomination` == 7  ~ 7,   # Mapping "Buddhist" to 7
+    `religious denomination` == 8  ~ 8,   # Mapping "Other christian" to 8
+    `religious denomination` == 9  ~ 2,   # Mapping "Other" to 9
+    TRUE ~ NA_integer_                     # All other values will be set to NA
   ))
+
 
 ```
 ```{r}
@@ -147,22 +216,22 @@ library(haven)
 
 wave1select <- wave1select %>%
   mutate(`Self positioning in political scale` = as.numeric(zap_labels(`Self positioning in political scale`))) %>%
-  filter(`Self positioning in political scale` >= 0)
+  filter(`Self positioning in political scale` >= -3)
 
 # And repeat this for the other data frames as needed
 
 
 wave2select <- wave2select %>%
   mutate(`Self positioning in political scale` = as.numeric(zap_labels(`Self positioning in political scale`))) %>%
-  filter(`Self positioning in political scale` >= 0)
+  filter(`Self positioning in political scale` >= -3)
 
 wave3select <- wave3select %>%
   mutate(`Self positioning in political scale` = as.numeric(zap_labels(`Self positioning in political scale`))) %>%
-  filter(`Self positioning in political scale` >= 0)
+  filter(`Self positioning in political scale` >= -3)
 
 wave4select <- wave4select %>%
   mutate(`Self positioning in political scale` = as.numeric(zap_labels(`Self positioning in political scale`))) %>%
-  filter(`Self positioning in political scale` >= 0)
+  filter(`Self positioning in political scale` >= -3)
 
 ```
 ```{r}
@@ -295,19 +364,30 @@ wave4select <- wave4select %>%
 
 ```
 ```{r}
+library(haven)
+
 wave1select <- wave1select %>%
-  mutate(across(everything(), ~{attr(.x, "label") <- NULL; .x}))
+  mutate(across(where(is.labelled), ~as.character(zap_labels(.))))
 
 wave2select <- wave2select %>%
-  mutate(across(everything(), ~{attr(.x, "label") <- NULL; .x}))
+  mutate(across(where(is.labelled), ~as.character(zap_labels(.))))
 
 wave3select <- wave3select %>%
-  mutate(across(everything(), ~{attr(.x, "label") <- NULL; .x}))
+  mutate(across(where(is.labelled), ~as.character(zap_labels(.))))
 
 wave4select <- wave4select %>%
-  mutate(across(everything(), ~{attr(.x, "label") <- NULL; .x}))
+  mutate(across(where(is.labelled), ~as.character(zap_labels(.))))
+
 ```
 
+```{r}
+wave2select <- wave2select %>%
+  mutate(educ = as.character(educ))
+wave4select <- wave4select %>%
+  mutate(educ = as.character(educ))
+
+
+```
 
 ```{r}
 # Step 3: Combine the data frames
@@ -318,9 +398,7 @@ print("final_df:")
 print(final_df)
 
 ```
-```{r}
 
-```
 ```{r}
 
 final_df <- final_df %>%
@@ -344,23 +422,79 @@ final_df <- final_df %>%
 ```{r}
 final_df <- final_df%>%
   mutate(`Self positioning in political scale` = case_when(
-    `Self positioning in political scale` == 1 ~ "Far Left",
+    `Self positioning in political scale` == 1 ~ "Left",
     `Self positioning in political scale` == 2 ~ "Left",
-    `Self positioning in political scale` == 3 ~ "Center-Left",
+    `Self positioning in political scale` == 3 ~ "Left",
     `Self positioning in political scale` == 4 ~ "Left of Center",
     `Self positioning in political scale` == 5 ~ "Center",
     `Self positioning in political scale` == 6 ~ "Right of Center",
-    `Self positioning in political scale` == 7 ~ "Center-Right",
+    `Self positioning in political scale` == 7 ~ "Right",
     `Self positioning in political scale` == 8 ~ "Right",
-    `Self positioning in political scale` == 9 ~ "Far Right",
-    `Self positioning in political scale` == 10 ~ "Extreme Right",
+    `Self positioning in political scale` == 9 ~ "Right",
+    `Self positioning in political scale` == 10 ~ "Right",
     TRUE ~ "Other" # This will catch any other values including NA
   ))
 
 ```
 ```{r}
+# This will remove all rows that have NA values in any column
+final_df <- na.omit(final_df)
 
 ```
+```{r}
+library(dplyr)
+
+final_df <- final_df %>%
+  mutate(across(c(`religious denomination`, 
+                  `Self positioning in political scale`,
+                  employment, 
+                  sex, 
+                  cheat, 
+                  educ, 
+                  `Socio-economic status of respondent`, 
+                  Year), factor))
+```
+```{r}
+# List of variables and their desired reference levels
+reference_levels <- list(
+  `religious denomination`= "None",
+  `Self positioning in political scale`= "Center",
+  `Socio-economic status of respondent`= "Upper middle class",
+  employment="Inactive"
+  
+  # Add more variables and their reference levels as needed
+)
+
+# Loop through the list and relevel each variable
+for (var in names(reference_levels)) {
+  level <- reference_levels[[var]]
+  final_df[[var]] <- relevel(as.factor(final_df[[var]]), ref = level)
+}
+
+```
+
+```{r}
+# Fit a probit model
+probit_model <- glm(cheat ~ , data =final_df , family = binomial(link = "probit"))
+```
+```{r}
+library(margins)
+
+# Calculate the marginal effects
+marginal_effects <- margins(probit_model)
+```
+```{r}
+# Assuming probit_model is your fitted model
+se <- sqrt(diag(vcov(probit_model)))
+coefs_and_se <- cbind(coef(probit_model), se)
+
+```
+
+
+
+
+
+
 
 
 
