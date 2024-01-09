@@ -31,9 +31,10 @@ wave1select <- wave1 %>%
     "employment" = V220,
     "sex" = V214,
     "cheat"=V192,
-    "educ"=V218
+    "educ"=V218,
+    "country"=cow
   ) %>%
-  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ","Socio-economic status of respondent")
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","country","educ","Socio-economic status of respondent")
 
 wave2select <- wave2 %>%
   rename(
@@ -44,9 +45,10 @@ wave2select <- wave2 %>%
     "age" = V355,
     "Socio-economic status of respondent"=V364,
     "cheat"=V296,
-    "educ"=V356
+    "educ"=V356,
+    "country"=V2A
   ) %>%
-  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ","Socio-economic status of respondent")
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ","Socio-economic status of respondent","country")
 
 wave3select <- wave3 %>%
   rename(
@@ -58,8 +60,9 @@ wave3select <- wave3 %>%
     "Socio-economic status of respondent"=V226,
     "employment" = V220
   ,"educ"=V218
+  , "country"=V2A
   ) %>%
-  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ","Socio-economic status of respondent")
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ","Socio-economic status of respondent","country")
 
 wave4select <- wave4 %>%
   rename(
@@ -70,9 +73,10 @@ wave4select <- wave4 %>%
     "employment" = V229,
     "educ"=V227,
     "Socio-economic status of respondent"=V235,
-    "cheat"=V204
+    "cheat"=V204,
+    "country"=V2A
   ) %>%
-  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","educ","cheat","Socio-economic status of respondent")
+  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","educ","cheat","Socio-economic status of respondent", "country")
 
 # Step 2: Add a 'Year' column to each data frame
 wave1select$Year <- 1980
@@ -80,6 +84,164 @@ wave2select$Year <- 1990
 wave3select$Year <- 1995
 wave4select$Year <- 1999
 ```
+```{r}
+wave1select= wave1select %>%
+  mutate(country = case_when(
+    country == 2   ~ "USA",
+    country == 70  ~ "Mexico",
+    country == 160 ~ "Argentina",
+    country == 310 ~ "Hungary",
+    country == 375 ~ "Finland",
+    country == 380 ~ "Sweden",
+    country == 560 ~ "South Africa",
+    country == 732 ~ "South Korea",
+    country == 740 ~ "Japan",
+    country == 900 ~ "Australia",
+    TRUE ~ as.character(country)  # Keep the original code as character for any other values
+  ))
+
+```
+```{r}
+wave2select <- wave2select %>%
+  mutate(country = case_when(
+    country == 4   ~ "Argentina",
+    country == 32  ~ "Brazil",
+    country == 76  ~ "Brazil",
+    country == 112 ~ "Belarus",
+    country == 152 ~ "Chile",
+    country == 156 ~ "China",
+    country == 203 ~ "Czech Rep.",
+    country == 356 ~ "India",
+    country == 392 ~ "Japan",
+    country == 410 ~ "South Korea",
+    country == 484 ~ "Mexico",
+    country == 566 ~ "Nigeria",
+    country == 643 ~ "Russia",
+    country == 703 ~ "Slovakia",
+    country == 710 ~ "South Africa",
+    country == 724 ~ "Spain",
+    country == 756 ~ "Switzerland",
+    country == 792 ~ "Turkey",
+    TRUE ~ as.character(country)  # Keep the original code as character for any other values
+  ))
+
+```
+```{r}
+wave3select <- wave3select %>%
+  mutate(country = case_when(
+    country == -4 ~ "Not asked in survey",
+    country == 8  ~ "Albania",
+    country == 31 ~ "Azerbaijan",
+    country == 32 ~ "Argentina",
+    country == 36 ~ "Australia",
+    country == 50 ~ "Bangladesh",
+    country == 51 ~ "Armenia",
+    country == 76 ~ "Brazil",
+    country == 100 ~ "Bulgaria",
+    country == 101 ~ "Sri Lanka",
+    country == 112 ~ "Belarus",
+    country == 152 ~ "Chile",
+    country == 156 ~ "China",
+    country == 158 ~ "Taiwan",
+    country == 170 ~ "Colombia",
+    country == 191 ~ "Croatia",
+    country == 203 ~ "Czech Rep.",
+    country == 214 ~ "Dominican Rep.",
+    country == 222 ~ "El Salvador",
+    country == 233 ~ "Estonia",
+    country == 246 ~ "Finland",
+    country == 268 ~ "Georgia",
+    country == 276 ~ "Germany",
+    country == 348 ~ "Hungary",
+    country == 356 ~ "India",
+    country == 392 ~ "Japan",
+    country == 410 ~ "South Korea",
+    country == 428 ~ "Latvia",
+    country == 440 ~ "Lithuania",
+    country == 484 ~ "Mexico",
+    country == 498 ~ "Moldova",
+    country == 554 ~ "New Zealand",
+    country == 566 ~ "Nigeria",
+    country == 578 ~ "Norway",
+    country == 586 ~ "Pakistan",
+    country == 604 ~ "Peru",
+    country == 608 ~ "Philippines",
+    country == 616 ~ "Poland",
+    country == 630 ~ "Puerto Rico",
+    country == 642 ~ "Romania",
+    country == 643 ~ "Russia",
+    country == 703 ~ "Slovakia",
+    country == 705 ~ "Slovenia",
+    country == 710 ~ "South Africa",
+    country == 724 ~ "Spain",
+    country == 752 ~ "Sweden",
+    country == 756 ~ "Switzerland",
+    country == 792 ~ "Turkey",
+    country == 804 ~ "Ukraine",
+    country == 807 ~ "Macedonia",
+    country == 826 ~ "United Kingdom",
+    country == 840 ~ "United States",
+    country == 858 ~ "Uruguay",
+    country == 862 ~ "Venezuela",
+    country == 891 ~ "Serbia",
+    country == 912 ~ "Montenegro",
+    country == 914 ~ "Bosnia",
+    TRUE ~ as.character(country)  # Keep the original code as character for any other values
+  ))
+
+```
+```{r}
+wave4select <- wave4select %>%
+  mutate(country = case_when(
+    country == -4 ~ "Not asked in survey",
+    country == 8  ~ "Albania",
+    country == 12 ~ "Algeria",
+    country == 32 ~ "Argentina",
+    country == 50 ~ "Bangladesh",
+    country == 70 ~ "Bosnia Herzegovina",
+    country == 152 ~ "Canada",
+    country == 156 ~ "China",
+    country == 356 ~ "India",
+    country == 360 ~ "Indonesia",
+    country == 364 ~ "Iran",
+    country == 368 ~ "Iraq",
+    country == 376 ~ "Israel",
+    country == 392 ~ "Japan",
+    country == 400 ~ "Jordan",
+    country == 410 ~ "South Korea",
+    country == 417 ~ "Kyrgyzstan",
+    country == 484 ~ "Mexico",
+    country == 498 ~ "Moldova",
+    country == 504 ~ "Morocco",
+    country == 566 ~ "Nigeria",
+    country == 586 ~ "Pakistan",
+    country == 604 ~ "Peru",
+    country == 608 ~ "Philippines",
+    country == 630 ~ "Puerto Rico",
+    country == 682 ~ "Saudi Arabia",
+    country == 702 ~ "Singapore",
+    country == 704 ~ "Vietnam",
+    country == 710 ~ "South Africa",
+    country == 716 ~ "Zimbabwe",
+    country == 724 ~ "Spain",
+    country == 752 ~ "Sweden",
+    country == 792 ~ "Turkey",
+    country == 800 ~ "Uganda",
+    country == 807 ~ "Macedonia",
+    country == 818 ~ "Egypt",
+    country == 834 ~ "Tanzania",
+    country == 840 ~ "United States",
+    country == 862 ~ "Venezuela",
+    country == 891 ~ "Serbia",
+    country == 911 ~ "Serbia",
+    country == 912 ~ "Montenegro",
+    TRUE ~ as.character(country)  # Keep the original code as character for any other values
+  ))
+
+```
+
+
+
 ```{r}
 wave1select <- wave1select %>%
   mutate(`Socio-economic status of respondent` = case_when(
@@ -309,58 +471,63 @@ wave4select <- wave4select %>%
   filter(!is.na(employment)) # Optional: Remove NA to discard unwanted categories
 
 ```
+```{r}
+library(dplyr)
+library(stringr)
+
+# Assuming we're converting a column named 'educ' for this example
+# This will replace non-numeric characters with NA and then convert to numeric
+wave1select <- wave1select %>%
+  mutate(educ = as.numeric(str_replace(educ, "[^0-9.-]", ""))) %>%
+  filter(educ > 0 & !is.na(educ))
+
+
+```
 
 
 ```{r}
 wave2select <- wave2select %>%
   mutate(educ = case_when(
-    educ == 1 ~ 12,
-    educ == 2 ~ 13,
-    educ == 3 ~ 14,
-    educ == 4 ~ 15,
-    educ == 5 ~ 16,
-    educ == 6 ~ 17,
-    educ == 7 ~ 18,
-    educ == 8 ~ 19,
-    educ == 9 ~ 20,
+    educ == 1  ~ 12,
+    educ == 2  ~ 13,
+    educ == 3  ~ 14,
+    educ == 4  ~ 15,
+    educ == 5  ~ 16,
+    educ == 6  ~ 17,
+    educ == 7  ~ 18,
+    educ == 8  ~ 19,
+    educ == 9  ~ 20,
     educ == 10 ~ 21,
-    educ == -5 ~ -2, # Mapping 'Missing; Unknown; Inappropriate' to 'No answer'
-    educ == -4 ~ -4, # 'Not asked' remains the same
-    educ == -3 ~ -3, # 'Not applicable (SP: Not studies)' remains the same
-    educ == -2 ~ -2, # 'No answer' remains the same
-    educ == -1 ~ -2, # Mapping 'Don’t know' to 'No answer'
-    TRUE ~ NA_integer_ # Other values will become NA
-  ))%>%
-  filter(!is.na(educ))
+    educ == -5 ~ NA_real_, # Mapping 'Missing; Unknown; Inappropriate' to NA
+    educ == -4 ~ NA_real_, # 'Not asked' to NA
+    educ == -3 ~ NA_real_, # 'Not applicable (SP: Not studies)' to NA
+    educ == -2 ~ NA_real_, # 'No answer' to NA
+    educ == -1 ~ NA_real_, # Mapping 'Don’t know' to NA
+    TRUE       ~ NA_real_  # Other values to NA
+  )) %>%
+  filter(!is.na(educ), educ > 0)
+
+
 
 ```
 ```{r}
-wave3select<- wave3select %>%
-  mutate(educ = case_when(
-    educ >= 12 & educ <= 21 ~ educ, # Keep ages 12 to 21 as is
-    educ == 0 | educ > 21 ~ NA_integer_, # Set ages out of range 12-21 to NA
-    educ == -2 ~ -2,  # NA remains the same
-    educ == -1 ~ -2,  # DK (Don't Know) is mapped to No answer
-    educ == -4 ~ -4,  # Not asked remains the same
-    TRUE ~ NA_integer_ # Set any other values to NA
-  ))%>%
-  filter(!is.na(educ))
+
+wave3select <- wave3select %>%
+  # Convert 'educ' to numeric; this assumes 'educ' is already a character or factor
+  mutate(educ = as.numeric(educ)) %>%
+  # Now filter out rows where 'educ' is not greater than 0
+  filter(educ > 0)
+
 
 ```
 ```{r}
+
 wave4select <- wave4select %>%
-  mutate(educ = case_when(
-    educ >= 1 & educ <= 9 ~ educ + 10,   # Adjusting based on the 1-10 range to match 11-20
-    educ == 10 ~ 21,                     # Aligning "20 and more" to 21 as in wave 1
-    educ == 20 ~ 21,                     # Aligning "20 and more" to 21 as in wave 1
-    educ == -5 ~ -2,                     # Mapping 'Missing; Unknown' to 'No answer'
-    educ == -4 ~ -4,                     # 'Not asked in survey' remains the same
-    educ == -3 ~ -3,                     # 'Not applicable; No formal education' remains the same
-    educ == -2 ~ -2,                     # 'No answer' remains the same
-    educ == -1 ~ -2,                     # Mapping 'Don’t know' to 'No answer'
-    TRUE ~ NA_integer_                   # Set any other values to NA
-  ))%>%
-  filter(!is.na(educ))
+  # Convert 'educ' to numeric; this assumes 'educ' is already a character or factor
+  mutate(educ = as.numeric(educ)) %>%
+  # Now filter out rows where 'educ' is not greater than 0
+  filter(educ > 0)
+
 
 ```
 ```{r}
@@ -381,10 +548,7 @@ wave4select <- wave4select %>%
 ```
 
 ```{r}
-wave2select <- wave2select %>%
-  mutate(educ = as.character(educ))
-wave4select <- wave4select %>%
-  mutate(educ = as.character(educ))
+
 
 
 ```
@@ -448,9 +612,9 @@ final_df <- final_df %>%
   mutate(across(c(`religious denomination`, 
                   `Self positioning in political scale`,
                   employment, 
-                  sex, 
-                  cheat, 
-                  educ, 
+                  sex,
+                  country,
+                  cheat,
                   `Socio-economic status of respondent`, 
                   Year), factor))
 ```
@@ -460,7 +624,8 @@ reference_levels <- list(
   `religious denomination`= "None",
   `Self positioning in political scale`= "Center",
   `Socio-economic status of respondent`= "Upper middle class",
-  employment="Inactive"
+  employment="Inactive",
+  country ="Sweden"
   
   # Add more variables and their reference levels as needed
 )
@@ -475,7 +640,7 @@ for (var in names(reference_levels)) {
 
 ```{r}
 # Fit a probit model
-probit_model <- glm(cheat ~ , data =final_df , family = binomial(link = "probit"))
+probit_model <- glm(cheat ~sex+country+age+I(age^2)+educ+employment+ `Socio-economic status of respondent`+`Self positioning in political scale`+`religious denomination`+ Year, data =final_df , family = binomial(link = "probit"))
 ```
 ```{r}
 library(margins)
