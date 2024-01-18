@@ -32,9 +32,10 @@ wave1select <- wave1 %>%
     "sex" = V214,
     "cheat"=V192,
     "educ"=V218,
+    "age"=V216,
     "country"=cow
   ) %>%
-  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","country","educ","Socio-economic status of respondent")
+  select("religious denomination", "Self positioning in political scale", "employment", "sex","cheat","country","educ","Socio-economic status of respondent","age")
 
 wave2select <- wave2 %>%
   rename(
@@ -46,7 +47,8 @@ wave2select <- wave2 %>%
     "Socio-economic status of respondent"=V364,
     "cheat"=V296,
     "educ"=V356,
-    "country"=V2A
+    "country"=V2A,
+    "age"=V355,
   ) %>%
   select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ","Socio-economic status of respondent","country")
 
@@ -61,6 +63,8 @@ wave3select <- wave3 %>%
     "employment" = V220
   ,"educ"=V218
   , "country"=V2A
+  ,"age"=V216
+  
   ) %>%
   select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","cheat","educ","Socio-economic status of respondent","country")
 
@@ -74,9 +78,10 @@ wave4select <- wave4 %>%
     "educ"=V227,
     "Socio-economic status of respondent"=V235,
     "cheat"=V204,
-    "country"=V2A
+    "country"=V2A,
+    "age"=V225
   ) %>%
-  select("religious denomination", "Self positioning in political scale", "age", "employment", "sex","educ","cheat","Socio-economic status of respondent", "country")
+  select("religious denomination", "Self positioning in political scale", "employment", "sex","educ","cheat","Socio-economic status of respondent", "country","age")
 
 # Step 2: Add a 'Year' column to each data frame
 wave1select$Year <- 1980
@@ -104,8 +109,8 @@ wave1select= wave1select %>%
 ```{r}
 wave2select <- wave2select %>%
   mutate(country = case_when(
-    country == 4   ~ "Argentina",
-    country == 32  ~ "Brazil",
+    country == -4   ~ "Not asked in survey ",
+    country == 32  ~ "Argentina",
     country == 76  ~ "Brazil",
     country == 112 ~ "Belarus",
     country == 152 ~ "Chile",
@@ -138,7 +143,7 @@ wave3select <- wave3select %>%
     country == 51 ~ "Armenia",
     country == 76 ~ "Brazil",
     country == 100 ~ "Bulgaria",
-    country == 101 ~ "Sri Lanka",
+    country == 101 ~ "SrpSka Republic",
     country == 112 ~ "Belarus",
     country == 152 ~ "Chile",
     country == 156 ~ "China",
@@ -232,7 +237,6 @@ wave4select <- wave4select %>%
     country == 834 ~ "Tanzania",
     country == 840 ~ "United States",
     country == 862 ~ "Venezuela",
-    country == 891 ~ "Serbia",
     country == 911 ~ "Serbia",
     country == 912 ~ "Montenegro",
     TRUE ~ as.character(country)  # Keep the original code as character for any other values
@@ -246,8 +250,8 @@ wave4select <- wave4select %>%
 wave1select <- wave1select %>%
   mutate(`Socio-economic status of respondent` = case_when(
     `Socio-economic status of respondent` == 1 ~ "Upper class",
-    `Socio-economic status of respondent` == 2 ~ "upper middle class",
-    `Socio-economic status of respondent` == 3 ~ "Low middle class", # Assuming 'Skilled' is similar to 'Low middle class'
+    `Socio-economic status of respondent` == 2 ~ "middle class",
+    `Socio-economic status of respondent` == 3 ~ "Low class", # Assuming 'Skilled' is similar to 'Low middle class'
    
     `Socio-economic status of respondent` == -2 ~ NA_character_,
       `Socio-economic status of respondent` == -4 ~ NA_character_
@@ -261,8 +265,8 @@ wave1select <- wave1select %>%
 wave2select <- wave2select %>%
   mutate(`Socio-economic status of respondent` = case_when(
     `Socio-economic status of respondent` == 1 ~ "Upper class",
-    `Socio-economic status of respondent` == 2 ~ "Upper middle class",
-    `Socio-economic status of respondent` == 3 ~ "Upper middle class",
+    `Socio-economic status of respondent` == 2 ~ "middle class",
+    `Socio-economic status of respondent` == 3 ~ "middle class",
     
      `Socio-economic status of respondent` == 4 ~ "Low class",
   
@@ -283,9 +287,9 @@ wave1select$`religious denomination`=wave1select$`religious denomination`%>%as.n
 wave3select <- wave3select %>%
   mutate(`Socio-economic status of respondent` = case_when(
     `Socio-economic status of respondent` == 1 ~ "Upper class",
-    `Socio-economic status of respondent` == 2 ~ "Upper middle class",
-    `Socio-economic status of respondent` == 3 ~ "Low middle class",
-    `Socio-economic status of respondent` == 4 ~ "Low middle class", # Assuming 'Working class' is similar to 'Low middle class'
+    `Socio-economic status of respondent` == 2 ~ "Upper class",
+    `Socio-economic status of respondent` == 3 ~ "middle class",
+    `Socio-economic status of respondent` == 4 ~ "middle class", # Assuming 'Working class' is similar to 'Low middle class'
     `Socio-economic status of respondent` == 5 ~ "Low class", # Assuming 'Lower class' is similar to 'Low middle class'
     `Socio-economic status of respondent` == -2 ~ NA_character_, # NA
     `Socio-economic status of respondent` == -1 ~ NA_character_, # DK (Don't know)
@@ -298,8 +302,8 @@ wave3select <- wave3select %>%
 wave4select <- wave4select %>%
   mutate(`Socio-economic status of respondent` = case_when(
     `Socio-economic status of respondent` == 1 ~ "Upper class",
-    `Socio-economic status of respondent` == 2 ~ "Upper middle class",
-    `Socio-economic status of respondent` == 3 ~ "Low middle class",
+    `Socio-economic status of respondent` == 2 ~ "middle class",
+    `Socio-economic status of respondent` == 3 ~ "middle class",
     `Socio-economic status of respondent` == 4 ~ "Low class", # Assuming 'Working class' is similar to 'Low middle class'
     `Socio-economic status of respondent` == 5 ~ "Low class", # Assuming 'Lower class' is similar to 'Low middle class'
     `Socio-economic status of respondent` == -2 ~ NA_character_, # No answer
@@ -318,7 +322,7 @@ wave2select <- wave2select %>%
     `religious denomination` == 62 ~ 2,
     `religious denomination` == 49 ~ 5,
     `religious denomination` == 42 ~ 4,
-     `religious denomination` == 31 ~ 6,
+     #`religious denomination` == 31 ~ 6,
     `religious denomination` == 28 ~ 8,
     `religious denomination` == 12 ~ 7,
     `religious denomination` == 53 ~ 8,
@@ -332,6 +336,13 @@ wave2select <- wave2select %>%
 
 ```
 ```{r}
+#filter out Hindu 
+wave1select <- wave1select %>%
+  mutate(`religious denomination` = ifelse(`religious denomination` == 6, 8, `religious denomination`))
+
+```
+
+```{r}
 
 wave3select <- wave3select %>%
   mutate(`religious denomination` = case_when(
@@ -341,7 +352,7 @@ wave3select <- wave3select %>%
     `religious denomination` == 3  ~ 3,
     `religious denomination` == 4  ~ 4,
     `religious denomination` == 5  ~ 5,
-    `religious denomination` == 6  ~ 6,
+    #`religious denomination` == 6  ~ 6,
     `religious denomination` == 7  ~ 7,
     `religious denomination` == 80 ~ 8,  # and possibly other categories as 'Other'
     `religious denomination` == 99 ~ -2,
@@ -363,8 +374,8 @@ wave4select <- wave4select %>%
     `religious denomination` == 62  ~ 2,   # Mapping "Protestant" to 2
     `religious denomination` == 52  ~ 3,   # Mapping "Orthodox" to 3
     `religious denomination` == 42  ~ 4,   # Mapping "Jew" to 4
-    `religious denomination` == 49  ~ 5,   # Mapping "Muslim" to 5
-    `religious denomination` == 31  ~ 6,   # Mapping "Hindu" to 6
+   `religious denomination` == 49  ~ 5,   # Mapping "Muslim" to 5
+   # `religious denomination` == 31  ~ 6,   # Mapping "Hindu" to 6
     `religious denomination` == 12  ~ 7,   # Mapping "Buddhist" to 7
        # Mapping "Other" to 9
     TRUE ~ 8                     # All other values will be set to NA
@@ -483,6 +494,10 @@ wave1select <- wave1select %>%
 
 
 ```
+```{r}
+
+```
+
 
 
 ```{r}
@@ -505,28 +520,33 @@ wave2select <- wave2select %>%
     educ == -1 ~ NA_real_, # Mapping 'Don’t know' to NA
     TRUE       ~ NA_real_  # Other values to NA
   )) %>%
-  filter(!is.na(educ), educ > 0)
-
+  filter(!is.na(educ))
 
 
 ```
 ```{r}
 
 wave3select <- wave3select %>%
-  # Convert 'educ' to numeric; this assumes 'educ' is already a character or factor
-  mutate(educ = as.numeric(educ)) %>%
-  # Now filter out rows where 'educ' is not greater than 0
-  filter(educ > 0)
+  mutate(educ = case_when(
+    educ < 0  ~ NA_real_,   # Exclude negative numbers by assigning NA
+    educ >= 21 ~ 21,        # Cap ages at 21
+    TRUE       ~ as.numeric(educ)  # Make sure educ is numeric for other cases
+  )) %>%
+  filter(!is.na(educ))  # Remove rows where educ is NA
+
 
 
 ```
 ```{r}
 
+
 wave4select <- wave4select %>%
-  # Convert 'educ' to numeric; this assumes 'educ' is already a character or factor
-  mutate(educ = as.numeric(educ)) %>%
-  # Now filter out rows where 'educ' is not greater than 0
-  filter(educ > 0)
+  mutate(educ = case_when(
+    educ < 0  ~ NA_real_,   # Exclude negative numbers by assigning NA
+    educ >= 21 ~ 21,        # Cap ages at 21
+    TRUE       ~ as.numeric(educ)  # Make sure educ is numeric for other cases
+  )) %>%
+  filter(!is.na(educ))  # Remove rows where educ is NA
 
 
 ```
@@ -628,7 +648,7 @@ final_df <- final_df %>%
 reference_levels <- list(
   `religious denomination`= "None",
   `Self positioning in political scale`= "Center",
-  `Socio-economic status of respondent`= "Upper middle class",
+  `Socio-economic status of respondent`= "middle class",
   employment="Unemployed",
   country ="Sweden",
   sex="female"
@@ -649,9 +669,7 @@ for (var in names(reference_levels)) {
 # Fit a probit model
 probit_model <- glm(cheat ~country+sex+age+I(age^2)+educ+employment+ `Socio-economic status of respondent`+`Self positioning in political scale`+`religious denomination`+ Year, data =final_df , family = binomial(link = "probit"))
 ```
-```{r}
 
-```
 
 ```{r}
 library(margins)
