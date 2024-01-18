@@ -90,6 +90,14 @@ wave3select$Year <- 1995
 wave4select$Year <- 1999
 ```
 ```{r}
+wave1select=wave1select%>%filter(cheat>0)
+wave2select=wave2select%>%filter(cheat>0)
+wave3select=wave3select%>%filter(cheat>0)
+wave4select=wave4select%>%filter(cheat>0)
+
+```
+
+```{r}
 wave1select= wave1select %>%
   mutate(country = case_when(
     country == 2   ~ "USA",
@@ -113,6 +121,7 @@ wave2select <- wave2select %>%
     country == 32  ~ "Argentina",
     country == 76  ~ "Brazil",
     country == 112 ~ "Belarus",
+    country == 616 ~ "Poland",
     country == 152 ~ "Chile",
     country == 156 ~ "China",
     country == 203 ~ "Czech Rep.",
@@ -200,11 +209,12 @@ wave4select <- wave4select %>%
   mutate(country = case_when(
     country == -4 ~ "Not asked in survey",
     country == 8  ~ "Albania",
+    country ==124 ~ "Canada",
     country == 12 ~ "Algeria",
     country == 32 ~ "Argentina",
     country == 50 ~ "Bangladesh",
     country == 70 ~ "Bosnia Herzegovina",
-    country == 152 ~ "Canada",
+    country == 152 ~ "Chile",
     country == 156 ~ "China",
     country == 356 ~ "India",
     country == 360 ~ "Indonesia",
@@ -218,12 +228,14 @@ wave4select <- wave4select %>%
     country == 484 ~ "Mexico",
     country == 498 ~ "Moldova",
     country == 504 ~ "Morocco",
+    
     country == 566 ~ "Nigeria",
     country == 586 ~ "Pakistan",
     country == 604 ~ "Peru",
     country == 608 ~ "Philippines",
     country == 630 ~ "Puerto Rico",
     country == 682 ~ "Saudi Arabia",
+    country == 688 ~NA,
     country == 702 ~ "Singapore",
     country == 704 ~ "Vietnam",
     country == 710 ~ "South Africa",
@@ -650,7 +662,7 @@ reference_levels <- list(
   `Self positioning in political scale`= "Center",
   `Socio-economic status of respondent`= "middle class",
   employment="Unemployed",
-  country ="Sweden",
+  country ="Norway",
   sex="female"
   
   # Add more variables and their reference levels as needed
@@ -692,6 +704,27 @@ average_marginal_effects <- data.frame(
 
 ```
 
+```{r}
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+
+```{r}
+# Filter the data frame for rows starting with 'country'
+country_marginal_effects <- average_marginal_effects[grep("^country", average_marginal_effects$Term), ]
+
+# Create the bar graph
+ggplot(country_marginal_effects, aes(x = Term, y = AME)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(x = "Country", y = "Average Marginal Effect", title = "Marginal Effects by Country")
+
+```
+```{r}
+
+```
 
 
 
