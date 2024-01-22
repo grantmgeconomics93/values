@@ -723,8 +723,86 @@ ggplot(country_marginal_effects, aes(x = Term, y = AME)) +
 
 ```
 ```{r}
+# Assuming 'cheat' is already a numeric column
+# and 'country' is a factor or character column in new_df
+average_by_country_compressed  <- aggregate(cheat ~ country, data = final_df, FUN = mean, na.rm = TRUE)
+
+# View the resulting data frame
+average_by_country_compressed
 
 ```
+```{r}
+wave1select$cheat <- as.numeric(as.character(wave1select$cheat))
+wave2select$cheat <- as.numeric(as.character(wave2select$cheat))
+wave3select$cheat <- as.numeric(as.character(wave3select$cheat))
+wave4select$cheat <- as.numeric(as.character(wave4select$cheat))
+
+```
+
+```{r}
+ final_dftwo <- bind_rows(wave1select,wave2select,wave3select,wave4select)
+
+# Display the final data frame
+print("final_df:")
+print(final_df)
+```
+```{r}
+# This will remove all rows that have NA values in any column
+final_dftwo <- na.omit(final_dftwo)
+```
+
+```{r}
+# and 'country' is a factor or character column in new_df
+average_by_country  <- aggregate(cheat ~ country, data = final_dftwo, FUN = mean)
+
+# View the resulting data frame
+average_by_country
+```
+```{r}
+library(MASS)
+
+# Assuming 'data_vector' is your data
+data_vector1 <- c(average_by_country$cheat)  # Replace with your actual data
+
+# Fit a t-distribution
+exponential_fit_compressed<- fitdistr(data_vector1, "exponential")
+
+# View the results
+exponential_fit_compressed
+
+```
+```{r}
+library(MASS)
+
+# Assuming 'data_vector' is your data
+data_vectortwo <- c(average_by_country_compressed$cheat) *10 # Replace with your actual data
+
+# Fit a t-distribution
+exponential_compressed<- fitdistr(data_vectortwo, "exponential")
+
+# View the results
+exponential_compressed
+```
+```{r}
+library(ggplot2)
+
+# Create a sequence of x values
+x_values <- seq(0, 4, by = 0.1)  # Adjust the range and step as needed
+
+# Compute the exponential density values
+y_values <- .16097303 * exp(-.16097303 * x_values)
+
+# Create the plot
+ggplot(data = data.frame(x = x_values, y = y_values), aes(x = x, y = y)) +
+  geom_line() +
+  labs(title = "Exponential Distribution Curve", x = "x", y = "Density") +
+  theme_minimal()
+
+```
+
+
+
+
 
 
 
