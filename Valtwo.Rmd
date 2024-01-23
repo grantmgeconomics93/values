@@ -1,0 +1,128 @@
+
+```{r}
+# Step 3: Combine the data frames
+  final_dftwo <- bind_rows(wave1select,wave2select,wave3select,wave4select)
+
+# Display the final data frame
+print("final_dftwo:")
+print(final_dftwo)
+
+```
+```{r}
+final_dftwo=final_dftwo%>%mutate(cheat=ifelse(cheat==1|cheat ==2,1,0))
+```
+
+
+```{r}
+
+final_dftwo <- final_dftwo %>%
+  mutate(`religious denomination` = case_when(
+    `religious denomination` == 0  ~ "None",
+    `religious denomination` == 1  ~ "Catholic",
+    `religious denomination` == 2  ~ "Protestant",
+    `religious denomination` == 3  ~ "Orthodox",
+    `religious denomination` == 4  ~ "Jew",
+    `religious denomination` == 5  ~ "Muslim",
+    `religious denomination` == 6  ~ "Hindu",
+    `religious denomination` == 7  ~ "Buddhist",
+    `religious denomination` == 8  ~ "Other",
+    
+    TRUE ~ NA_character_  # All other values will become NA
+  ))
+
+
+```
+```{r}
+final_dftwo <- final_dftwo%>%
+  mutate(sex = case_when(
+    sex == 1 ~ "male",
+    sex == 2 ~ "female",
+     TRUE ~ NA_character_  # All other values will become NA
+  ))
+```
+
+```{r}
+final_dftwo <- final_dftwo%>%
+  mutate(`Self positioning in political scale` = case_when(
+    `Self positioning in political scale` == 1 ~ "Left",
+    `Self positioning in political scale` == 2 ~ "Left",
+    `Self positioning in political scale` == 3 ~ "Left",
+    `Self positioning in political scale` == 4 ~ "Left",
+    `Self positioning in political scale` == 5 ~ "Center",
+    
+    `Self positioning in political scale` == 6 ~ "Right",
+    `Self positioning in political scale` == 7 ~ "Right",
+    `Self positioning in political scale` == 8 ~ "Right",
+    `Self positioning in political scale` == 9 ~ "Right",
+    `Self positioning in political scale` == 10 ~ "Right",
+       TRUE ~ NA_character_  # All other values will become NA
+  ))
+
+```
+```{r}
+# This will remove all rows that have NA values in any column
+final_dftwo <- na.omit(final_dftwo)
+
+```
+```{r}
+library(dplyr)
+
+final_dftwo <- final_dftwo %>%
+  mutate(across(c(`religious denomination`, 
+                  `Self positioning in political scale`,
+                  employment, 
+                  sex,
+                  country,
+                  `Socio-economic status of respondent`, 
+                  Year), factor))
+```
+```{r}
+# List of variables and their desired reference levels
+reference_levels <- list(
+  `religious denomination`= "None",
+  `Self positioning in political scale`= "Center",
+  `Socio-economic status of respondent`= "middle class",
+  employment="Unemployed",
+  country ="Sweden",
+  sex="female"
+  
+  # Add more variables and their reference levels as needed
+)
+
+# Loop through the list and relevel each variable
+for (var in names(reference_levels)) {
+  level <- reference_levels[[var]]
+  final_dftwo[[var]] <- relevel(as.factor(final_dftwo[[var]]), ref = level)
+}
+
+```
+
+
+```{r}
+# Fit a probit model
+probit_modeltwo <- glm(cheat ~country+sex+age+I(age^2)+educ+employment+ `Socio-economic status of respondent`+`Self positioning in political scale`+`religious denomination`+ Year, data =final_dftwo , family = binomial(link = "probit"))
+
+
+```
+
+
+```{r}
+library(margins)
+marginal_effects_two <- margins(probit_modeltwo)
+marginal_summary_two=summary(marginal_effects_two)
+
+
+```
+```{r}
+marginal_summary_two <- data.frame(
+  Term = marginal_summary_two$factor,
+  AME = marginal_summary_two$AME,
+  SE = marginal_summary_two$SE,
+  z = marginal_summary_two$z,
+  p = marginal_summary_two$p,
+  lower = marginal_summary_two$lower,
+  upper = marginal_summary_two$upper
+)
+
+
+```
