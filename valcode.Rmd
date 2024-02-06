@@ -302,7 +302,7 @@ wave1select$`religious denomination`=wave1select$`religious denomination`%>%as.n
 wave3select <- wave3select %>%
   mutate(`Socio-economic status of respondent` = case_when(
     `Socio-economic status of respondent` == 1 ~ "Upper class",
-    `Socio-economic status of respondent` == 2 ~ "middle class",
+    `Socio-economic status of respondent` == 2 ~ "Upper class",
     `Socio-economic status of respondent` == 3 ~ "middle class",
     `Socio-economic status of respondent` == 4 ~ "Low class", # Assuming 'Working class' is similar to 'Low middle class'
     `Socio-economic status of respondent` == 5 ~ "Low class", # Assuming 'Lower class' is similar to 'Low middle class'
@@ -907,6 +907,11 @@ merged_df <- merged_df %>%
 
 ```
 ```{r}
+merged_df <- merged_df %>%
+  mutate(inclevalnine0 = ifelse(`1990 [YR1990]` > 20000, "high income",ifelse(`1990 [YR1990]` >= 1400 & `1990 [YR1990]` < 20000, "middle income",ifelse(`1990 [YR1990]` > 0 & `1990 [YR1990]` < 1400, "low income", "unknown"))))
+```
+
+```{r}
 merged_df$Year <- as.factor(merged_df$Year)
 ```
 
@@ -946,37 +951,52 @@ library(DescTools)
 original  <- glm(cheat ~country+sex+age+I(age^2)+educ+employment+ `Socio-economic status of respondent`+`Self positioning in political scale`+`religious denomination`+Year, data =merged_df , family = binomial(link = "probit"))
 
 
-PseudoR2(original ,c("McFaddenAdj","McKelveyZavoina"))
+PseudoR2(original ,c("McFaddenAdj","McKelveyZavoina","Tjur"))
 ```
 
 ```{r}
  raw  <- glm(cheat ~sex+age+I(age^2)+educ+employment+ `Socio-economic status of respondent`+`Self positioning in political scale`+`religious denomination`+Year, data =merged_df , family = binomial(link = "probit"))
- PseudoR2(raw,c("McFaddenAdj","McKelveyZavoina"))
+ PseudoR2(raw,c("McFaddenAdj","McKelveyZavoina","Tjur"))
 ```
 
 ```{r}
+
+
 probit_region  <-glm(cheat ~region+sex+age+I(age^2)+educ+employment+ `Socio-economic status of respondent`+`Self positioning in political scale`+`religious denomination`+Year, data =merged_df , family = binomial(link = "probit"))
- PseudoR2(probit_region,c("McFaddenAdj","McKelveyZavoina"))
+ PseudoR2(probit_region,c("McFaddenAdj","McKelveyZavoina","Tjur"))
 
 ```
 ```{r}
-corruption   <- glm(cheat ~score+growth+incleval+sex+age+I(age^2)+educ+employment+ `Socio-economic status of respondent`+`Self positioning in political scale`+`religious denomination`+Year, data =merged_df , family = binomial(link = "probit"))
- PseudoR2(corruption,c("McFaddenAdj","McKelveyZavoina"))
+
+corruptionpluecon   <- glm(cheat ~sex+age+I(age^2)+educ+employment+ `Socio-economic status of respondent`+`Self positioning in political scale`+`religious denomination`+Year, data =merged_df , family = binomial(link = "probit"))
+ PseudoR2(corruptionpluecon,c("McFaddenAdj","McKelveyZavoina","Tjur"))
 ```
 
 ```{r}
 
 bothcorandregion <- glm(cheat ~region+growth+incleval+score+sex+age+I(age^2)+educ+employment+ `Socio-economic status of respondent`+`Self positioning in political scale`+`religious denomination`+Year, data =merged_df , family = binomial(link = "probit"))
- PseudoR2(bothcorandregion,c("McFaddenAdj","McKelveyZavoina"))
+ PseudoR2(bothcorandregion,c("McFaddenAdj","McKelveyZavoina", "Tjur"))
 
 ```
 ```{r}
-marginal_effects <- margins(bothcorandregion,data = merged_df)
+  
+justregion <- glm(cheat ~region+Year, data =merged_df , family = binomial(link = "probit"))
+ PseudoR2(justregion,c("McFaddenAdj","McKelveyZavoina","Tjur"))
+```
+```{r}
+  
+just_country <- glm(cheat ~country +Year, data =merged_df , family = binomial(link = "probit"))
+ PseudoR2(just_country,c("McFaddenAdj","McKelveyZavoina","Tjur"))
+```
+
+
+```{r}
+marginal_effects <- margins(original)
 marginal_summary=summary(marginal_effects)
 ```
 
 ```{r}
-bothcorregeffects <- data.frame(
+originalreg  <- data.frame(
   Term = marginal_summary$factor,
   AME = marginal_summary$AME,
   SE = marginal_summary$SE,
@@ -989,6 +1009,21 @@ bothcorregeffects <- data.frame(
 
 ```
 ```{r}
+marginal_effectstwo <- margins(justregion,data = merged_df)
+marginal_summarytwo=summary(marginal_effectstwo)
+just_region <- data.frame(
+  Term = marginal_summarytwo$factor,
+  AME = marginal_summarytwo$AME,
+  SE = marginal_summarytwo$SE,
+  z = marginal_summarytwo$z,
+  p = marginal_summarytwo$p,
+  lower = marginal_summarytwo$lower,
+  upper = marginal_summarytwo$upper
+)
+
+```
+
+```{r}
 pR2(probit_modelcorruption)
 ```
 ```{r}
@@ -998,7 +1033,7 @@ pR2(probit_modelcorruption)
 ```{r}
 cor(as.numeric(merged_df$incleval),as.numeric(merged_df$score))
 cor(as.numeric(merged_df$cheat),as.numeric(merged_df$score))
-cor(as.numeric(merged_df$incleval),as.numeric(merged_df$cheat))
+cor(as.numeric(merged_df$mean),as.numeric(merged_df$cheat))
 cor(as.numeric(merged_df$growth),as.numeric(merged_df$score))
 ```
 
